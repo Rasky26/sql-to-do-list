@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/Rasky26/sql-to-do-list.git"
   },
-  "author": "",
+  "author": "Rasky26",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Rasky26/sql-to-do-list/issues"
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Rasky26/sql-to-do-list#readme",
   "dependencies": {
     "express": "^4.18.1",
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.16",
+    "pg": "^8.7.3"
   }
 }
