@@ -7,12 +7,51 @@
     <!-- Import jQuery -->
     <script src="./libraries/jQuery.js" charset="utf-8"></script>
     <!-- Import Javascript scripts -->
-    <script src="./scripts/script.js" charset="utf-8"></script>
+    <script type="module" src="./scripts/script.js" charset="utf-8"></script>
     <!-- Import styles -->
     <link rel="stylesheet" href="./styles/style.css">
     <title>Document</title>
 </head>
 <body>
-    <h1>To-Do's to ToDaLoo's</h1>
+    <!-- To Do List Header -->
+    <header>
+        <h1>To-Do's to To-Da-Loo's</h1>
+    </header>
+
+    <!-- Form for new inputs -->
+    <section>
+        <form id="form--to-do-entry">
+            <!-- Task name input -->
+            <input type="text" name="to-do-name" id="to-do-name" required/>
+            <label for="to-do-name">Task</label>
+             <!-- Due date date and time inputs -->
+            <div class="date-time-entry">
+                <input type="date" name="due-date-date-selector" id="due-date-date-selector" />
+                <label for="due-date-date-selector">Due Date</label>
+                <input type="time" name="due-date-time-selector" id="due-date-time-selector" />
+                <label for="due-date-time-selector">Time</label>
+            </div>
+            <!-- Hide to do until date and time inputs -->
+            <div class="date-time-entry">
+                <input type="date" name="delay-display-item-until-date" id="delay-display-item-until-date" />
+                <label for="delay-display-item-until-date">Hide Task Until</label>
+                <input type="time" name="delay-display-item-until-time" id="delay-display-item-until-time" />
+                <label for="delay-display-item-until-time">Time</label>
+            </div>
+            <!-- Note input -->
+            <textarea name="to-do-notes" id="to-do-notes" cols="30" rows="10"></textarea>
+            <label for="to-do-notes">Notes</label>
+            <!-- Input button -->
+            <button id="submit-new-item" type="submit">Add Item</button>
+        </form>
+    </section>
+
+    <!-- To Do List Body -->
+    <main>
+        <div id="to-do-list" class="container">
+            <!-- Add new ToDo items here -->
+            
+        </div>
+    </main>
 </body>
 </html>
