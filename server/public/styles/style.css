@@ -1,1 +1,156 @@
 @import "./_reset.css";
+
+:root {
+    /* Set color pallette */
+    /* REF: https://www.schemecolor.com/wallpaper?i=44660&desktop */
+    --clr-tan-focus: hsl(37, 38%, 58%);
+    --clr-tan: hsl(59, 48%, 83%);
+    --clr-light-tan: hsl(60, 63%, 89%);
+    --clr-light-green: hsl(84, 50%, 78%);
+    --clr-green: hsl(88, 47%, 71%);
+    --clr-green-focus: hsl(97, 47%, 64%);
+    /* Font color */
+    --clr-font-color: hsl(0, 0%, 26%);
+    /* Font weights */
+    --fw-light: 200;
+    --fw-normal: 400;
+    --fw-bold: 800;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd,
+input,
+textarea {
+    font-family: "Neuton", Arial, Helvetica, sans-serif;
+    letter-spacing: 1px;
+    color: var(--clr-font-color);
+}
+
+header {
+    background-color: var(--clr-green);
+    border-top: 8px solid var(--clr-light-green);
+    border-bottom: 4px solid var(--clr-green-focus);
+    text-align: center;
+    font-size: 200%;
+}
+
+#form--to-do-entry {
+    border-left: 2px solid var(--clr-light-tan);
+    border-right: 2px solid var(--clr-light-tan);
+    border-radius: 16px;
+    margin: 2rem auto 4rem;
+    padding: 1.26rem 2em;
+    width: 70%;
+}
+
+#form--to-do-entry > input {
+    outline: 0;
+    border: none;
+    border-bottom: 1px solid var(--clr-tan);
+    width: 100%;
+    padding: 12px 8px 2px;
+    font-size: 125%;
+    transition: 0.26s linear;
+}
+
+#form--to-do-entry > input:hover,
+#form--to-do-entry > input:focus {
+    border-bottom: 1px solid var(--clr-tan-focus);
+}
+
+label[for="to-do-name"] {
+    order: -1;
+    padding-left: 24px;
+    transform: translateY(-200px);
+    font-weight: var(--fw-light);
+    color: red;
+}
+
+#to-do-list {
+    border: 1px solid red;
+}
+
+.to-do-item {
+    display: flex;
+    margin-bottom: 1em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+    border: 1px solid var(--clr-tan-focus);
+    border-radius: 12px;
+    background-color: var(--clr-tan);
+    height: 7ch;
+    transition: 0.26s linear;
+}
+
+.to-do-item:hover,
+.to-do-item:focus {
+    background-color: var(--clr-green-focus);
+    height: 8ch;
+}
+
+.complete-button-container {
+    display: flex;
+    align-items: center;
+    width: 10%;
+}
+
+.complete-button {
+    border: 2px solid var(--clr-green);
+    border-radius: 6px;
+    background-color: var(--clr-light-green);
+    height: 100%;
+    width: 100%;
+    font-weight: var(--fw-bold);
+    letter-spacing: 1px;
+    transition: 0.26s;
+}
+
+.complete-button:hover,
+.complete-button:focus {
+    background-color: var(--clr-green);
+    scale: 115%;
+}
+
+.complete-button:active {
+    background-color: var(--clr-green-focus);
+}
+
+.due-date-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 0.16rem;
+    width: 20%;
+    font-weight: var(--fw-light);
+}
+
+.due-date-date {
+    font-size: 112.5%;
+}
+.due-date-time {
+    padding-left: 12px;
+}
+
+.task-container {
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+    width: 60%;
+}
+
+.task {
+    font-size: 125%;
+    font-weight: var(--fw-bold);
+}
+
+.note-container {
+    width: 10%;
+}
