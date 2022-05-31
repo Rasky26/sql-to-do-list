@@ -83,33 +83,65 @@ function updateListAgainstFilters(objects) {
 
 // Function that handles creating the individual DOM To Do item
 function toDoComponent(obj) {
-
     // Return the HTML with values related to the specific object
     return `
         <div class="to-do-item" data-id=${obj.id}>
-            <div class="task">${obj.task_name}</div>
-
-            <div class="due-date-container">
-                <p class="due-date-date">
-                    ${
-                        obj.due_date ?
-                        formatDate(obj.due_date) :
-                        ""
-                    }
-                </p>
-                <p class="due-date-time">
-                    ${
-                        obj.due_date ?
-                        formatTime(obj.due_date) :
-                        ""
-                    }
-                </p>
+            <div class="complete-button-container">
+                <button class="complete-button">Done?</button>
             </div>
-
-            <button class="complete-button">Done?</button>
-            <button class="delete-button">X</button>
+            <div class="due-date-container">
+                ${dueDateDisplay(obj.due_date)}
+            </div>
+            <div class="task-container">
+                <p class="task">${obj.task_name}</p>
+            </div>
+            <div class="note-container">
+            </div>
+            <div class="delete-button-container">
+                <button class="delete-button">X</button>
+            </div>
         </div>
     `
+}
+
+
+// Function that purely handles the `due_date` and whether
+// something needs to be displayed or not.
+function dueDateDisplay(date) {
+
+    // Check that a `due_date` was listed
+    if (date) {
+
+        // Get the date string, formatted
+        const dateString = formatDate(date)
+
+        // Set the time for the due date.
+        let timeString = formatTime(date)
+        // Otherwise, if it is all day then set it to a blank value
+        if (timeString === "11:59 PM") {
+            timeString = ""
+        }
+
+        if (timeString) {
+            // Return the HTML to add into the current To Do element
+            // with both date and time
+            return `
+                <p class="due-date">
+                    <span class="due-date-date">${dateString}</span>
+                    <br />
+                    <span class="due-date-time">by ${timeString}</span>
+                </p>
+            `
+        }
+
+        // Otherwise, return only the date
+        return `
+            <p class="due-date-date">${dateString}</p>
+        `
+    }
+
+    // If `due_date` was null, just return a blank value
+    return ""
 }
 
 export { rebuildToDoList }

@@ -19,8 +19,11 @@ function onDocumentLoad() {
     // Pull in the To Do list on page load
     getToDoList()
 
-    // Click handler for submitting a new to-do item
+    // Click listener for submitting a new to-do item
     $("#form--to-do-entry").submit("#submit-new-item", handleToDoSubmission)
+
+    // Click listener for completing a to-do item
+    $("#to-do-list").on("click", ".complete-button", markToDoCompleted)
 }
 
 
@@ -97,6 +100,41 @@ function getToDoList() {
     .catch((err) => {
         console.log(`
             Error on script.js getToDoList()
+
+            ${err}
+        `)
+    })
+}
+
+
+// Function that updates the server with the current
+// time for the selected object when the the `Complete`
+// button event occurs.
+function markToDoCompleted() {
+
+    // Get the targetted object's ID from the `data-*` value
+    const objId = $(this).parents(".to-do-item").data('id')
+    // Get the current time
+    const taskData = {
+        completed_on: new Date()
+    }
+
+    // Get the latest to-do list from the server
+    $.ajax({
+        url: `/to-do/${objId}`,
+        method: "PUT",
+        data: taskData,
+    })
+    // Get the results from the server
+    .then(() => {
+        console.log(`PUT successful to /to-do/${objId}`)
+        // Send the DB results to be re-rendered to the DOM
+        getToDoList()
+    })
+    // Or display the error that occurred
+    .catch((err) => {
+        console.log(`
+            Error on script.js markToDoCompleted()
 
             ${err}
         `)
