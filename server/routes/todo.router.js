@@ -3,7 +3,37 @@ const routes = express.Router();
 const pool = require("../modules/pool");
 
 
-// GET method for returning all To Do DB rows
+// GET method for returning all completed To Do DB rows
+routes.get("/completed-tasks", (req, res) => {
+
+    // Set the SQL query
+    const sqlQuery = `
+        SELECT * FROM "todolist"
+        WHERE "completed_on" IS NOT null
+        ORDER BY "completed_on" DESC
+    `
+
+    // Submit the query to Postgres
+    pool.query(sqlQuery)
+
+    // Return and send the response rows
+    .then((response) => {
+        res.send(response.rows)
+    })
+
+    // Otherwise, log the error
+    .catch((err) => {
+        console.log(`
+            Server Error on GET method:
+
+            ${err}
+        `)
+        res.sendStatus(500)
+    })
+})
+
+
+// GET method for returning all non-completed To Do DB rows
 routes.get("/", (req, res) => {
 
     // Set the SQL query
@@ -18,7 +48,7 @@ routes.get("/", (req, res) => {
 
     // Return and send the response rows
     .then((response) => {
-        res.status(200).send(response.rows)
+        res.send(response.rows)
     })
 
     // Otherwise, log the error
@@ -37,21 +67,58 @@ routes.get("/", (req, res) => {
 // To Do list
 routes.post("/", (req, res) => {
 
+    // Simple look-up field from JS to DB naming conventions
+    const nameLookUp = {
+        "dueDate": "due_date",
+        "hiddenUntil": "hidden_until",
+    }
+
+    // Pull out the req.body to its own variable name
+    const newToDo = req.body
+
+    // Set the base SQL values that will be added onto
+    let varName = `("task_name", "note"`
+    let valuesList = `($1, $2`
+    // Use this counter to dynamically add values to SQL query
+    let startCount = 3
+    // Establish the parameters to pass to the DB
+    let sqlParams = [
+        req.body.taskName,
+        req.body.notes
+    ]
+
+    // Loop over the incoming data. This loop will add in additional
+    // fields of data if they exist, otherwise it will leave them out
+    // of the SQL query (and params) if they are blank or missing.
+    for (const key in newToDo) {
+        if (Object.hasOwnProperty.call(newToDo, key)) {
+            const toDo = newToDo[key];
+            // Skip over these fields that are required
+            if (['taskName', 'notes'].includes(key)) {
+                continue
+            }
+            // Otherwise, check if a datetime value exists
+            // and add that field to the SQL for processing.
+            if (toDo) {
+                varName += `, "${nameLookUp[key]}"`
+                valuesList += `, $${startCount}`
+                startCount++
+                sqlParams.push(toDo)
+            }
+        }
+    }
+
+    // Close out the different SQL query strings
+    varName += `)`
+    valuesList += `)`
+
     // Set the SQL query
     const sqlQuery = `
         INSERT INTO "todolist"
-            ("task_name", "due_date", "hidden_until", "note")
+            ${varName}
         VALUES
-            ($1, $2, $3, $4)
+            ${valuesList}
     `
-
-    // Establish the parameters to pass to the DB
-    const sqlParams = [
-        req.body.taskName,
-        req.body.dueDate,
-        req.body.hiddenUntil,
-        req.body.notes
-    ]
 
     // Submit the query to Postgres
     pool.query(sqlQuery, sqlParams)
@@ -86,9 +153,15 @@ routes.put("/:id", (req, res) => {
         res.status(400).send({error: `Invalid song id of ${koalaId}`})
     }
 
-    // Get the `completed_on` date and set it to a UTC string
-    let updateInfo = new Date(req.body.completed_on)
-    updateInfo = updateInfo.toUTCString()
+    // Set a default value to `null`
+    let updateInfo = null
+
+    // Check if it should be assigning it to a date value
+    if (req.body.completed_on) {
+        // Get the `completed_on` date and set it to a UTC string
+        updateInfo = new Date(req.body.completed_on)
+        updateInfo = updateInfo.toUTCString()
+    }
 
     // Set the SQL query
     const sqlQuery = `

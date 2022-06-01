@@ -43,6 +43,7 @@ header {
 }
 
 #form--to-do-entry {
+    position: relative;
     border-left: 2px solid var(--clr-light-tan);
     border-right: 2px solid var(--clr-light-tan);
     border-radius: 16px;
@@ -56,6 +57,7 @@ header {
     border: none;
     border-bottom: 1px solid var(--clr-tan);
     width: 100%;
+    margin: 16px 0px;
     padding: 12px 8px 2px;
     font-size: 125%;
     transition: 0.26s linear;
@@ -66,12 +68,51 @@ header {
     border-bottom: 1px solid var(--clr-tan-focus);
 }
 
-label[for="to-do-name"] {
+label {
     order: -1;
+    color: var(--clr-tan-focus);
+    transition: 0.26s linear;
+}
+
+label[for="to-do-name"] {
+    position: absolute;
+    left: 24px;
     padding-left: 24px;
-    transform: translateY(-200px);
+    transform: translateY(24px);
+    font-size: 150%;
     font-weight: var(--fw-light);
-    color: red;
+}
+
+#form--to-do-entry > input:hover + label[for="to-do-name"],
+#form--to-do-entry > input:focus + label[for="to-do-name"],
+#form--to-do-entry > input:valid + label[for="to-do-name"] {
+    transform: translateY(0px);
+    font-size: 100%;
+    color: var(--clr-tan);
+}
+
+#to-do-notes {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid var(--clr-tan);
+    width: 100%;
+    margin: 48px 0px 16px;
+    padding: 12px 8px 2px;
+    height: 4ch;
+}
+
+label[for="to-do-notes"] {
+    position: absolute;
+    left: 24px;
+    padding-left: 48px;
+    transform: translateY(32px);
+    font-weight: var(--fw-light);
+}
+
+input[type="date"],
+input[type="time"] {
+    margin: 16px;
+    font-size: 125%;
 }
 
 #to-do-list {
