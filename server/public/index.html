@@ -28,6 +28,11 @@
             <!-- Task name input -->
             <input type="text" name="to-do-name" id="to-do-name" required/>
             <label for="to-do-name">Task</label>
+            <!-- Note input -->
+            <div id="to-do-notes-container" class="">
+                <textarea name="to-do-notes" id="to-do-notes"></textarea>
+                <label for="to-do-notes">Notes</label>
+            </div>
              <!-- Due date date and time inputs -->
             <div class="date-time-entry">
                 <input type="date" name="due-date-date-selector" id="due-date-date-selector" />
@@ -42,9 +47,6 @@
                 <input type="time" name="delay-display-item-until-time" id="delay-display-item-until-time" />
                 <label for="delay-display-item-until-time">Time</label>
             </div>
-            <!-- Note input -->
-            <textarea name="to-do-notes" id="to-do-notes" cols="30" rows="10"></textarea>
-            <label for="to-do-notes">Notes</label>
             <!-- Input button -->
             <button id="submit-new-item" type="submit">Add Item</button>
         </form>
@@ -52,7 +54,12 @@
 
     <!-- To Do List Body -->
     <main>
-        <div id="to-do-list" class="container">
+        <h2 id="to-do-list-open-title">To Do List:</h2>
+        <div id="to-do-list-open" class="to-do-list container">
+            <!-- Add new ToDo items here -->
+        </div>
+        <h2 id="to-do-list-completed-title">Completed Tasks History:</h2>
+        <div id="to-do-list-completed" class="to-do-list container">
             <!-- Add new ToDo items here -->
             
         </div>

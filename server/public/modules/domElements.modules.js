@@ -4,14 +4,17 @@ import { dateValues, formatDate, formatTime } from "../modules/time.modules.js"
 // Function that handles clearing the To Do list from
 // the DOM and rebuilding it based on the array that
 // was passed to it.
-function rebuildToDoList(objects) {
+//
+// `target` is the HTML list element to rebuild, allows for
+// re-usability.
+function rebuildToDoList(objects, target) {
 
     // Run the current `objects` array through a filter
     // and reset that array back to `objects`
     objects = updateListAgainstFilters(objects)
 
     // Empty the DOM of the current list
-    $("#to-do-list").empty()
+    $(target).empty()
 
     // Loop over the array and display the items to
     // the DOM
@@ -19,7 +22,7 @@ function rebuildToDoList(objects) {
 
         // Use jQuery to append each To Do list to
         // the DOM
-        $("#to-do-list").append(
+        $(target).append(
             toDoComponent(obj)
         )
     }
@@ -76,30 +79,43 @@ function updateListAgainstFilters(objects) {
         // to the `outputObject` array.
         outputObjects.push(obj)
     }
-    console.log(outputObjects)
+
     return outputObjects
 }
 
 
 // Function that handles creating the individual DOM To Do item
 function toDoComponent(obj) {
+
     // Return the HTML with values related to the specific object
     return `
         <div class="to-do-item" data-id=${obj.id}>
-            <div class="complete-button-container">
-                <button class="complete-button">Done?</button>
-            </div>
-            <div class="due-date-container">
-                ${dueDateDisplay(obj.due_date)}
-            </div>
-            <div class="task-container">
-                <p class="task">${obj.task_name}</p>
-            </div>
-            <div class="note-container">
-            </div>
-            <div class="delete-button-container">
-                <button class="delete-button">X</button>
-            </div>
+            
+            ${setCompletedButtonDisplay(obj.completed_on)}
+            
+            ${dateDisplay(obj)}
+
+            ${taskDisplay(obj)}
+            
+            ${noteDisplay(obj.note)}
+            
+            ${deleteButton()}
+
+        </div>
+    `
+}
+
+
+// Function that handles the button display for To Do items
+function setCompletedButtonDisplay(completed_on) {
+
+    return `
+        <div class="complete-button-container">
+            <input 
+                class="complete-button form-check-input" 
+                type="checkbox"
+                ${completed_on ? 'checked' : ''}
+            />
         </div>
     `
 }
@@ -107,7 +123,15 @@ function toDoComponent(obj) {
 
 // Function that purely handles the `due_date` and whether
 // something needs to be displayed or not.
-function dueDateDisplay(date) {
+function dateDisplay(obj) {
+
+    // Initialize the `date` as the `completed_on` date
+    let date = obj.completed_on
+    // If the task is not completed, instead set the date
+    // as the `due_date`
+    if (!date) {
+        date = obj.due_date
+    }
 
     // Check that a `due_date` was listed
     if (date) {
@@ -119,29 +143,65 @@ function dueDateDisplay(date) {
         let timeString = formatTime(date)
         // Otherwise, if it is all day then set it to a blank value
         if (timeString === "11:59 PM") {
-            timeString = ""
+            timeString = null
         }
 
         if (timeString) {
             // Return the HTML to add into the current To Do element
             // with both date and time
             return `
-                <p class="due-date">
-                    <span class="due-date-date">${dateString}</span>
-                    <br />
-                    <span class="due-date-time">by ${timeString}</span>
-                </p>
+                <div class="date-container">
+                    <p class="display-date">
+                        <span class="display-date-date">${dateString}</span>
+                        <br />
+                        <span class="display-date-time">${timeString}</span>
+                    </p>
+                </div>
             `
         }
 
         // Otherwise, return only the date
         return `
-            <p class="due-date-date">${dateString}</p>
+            <p class="display-date-date">${dateString}</p>
         `
     }
 
-    // If `due_date` was null, just return a blank value
+    // If `date` was null, just return a blank value
     return ""
 }
+
+
+// Function that handles the display of the task
+function taskDisplay(obj) {
+
+    return `
+        <div class="task-container">
+            <p class="task">${obj.task_name}</p>
+        </div>
+    `
+}
+
+
+// Function that handles the note display
+function noteDisplay(note) {
+
+    return `
+        <div class="note-container">
+        
+        </div>
+    `
+}
+
+
+// Function for handling the deletion button
+function deleteButton() {
+
+    return `
+        <div class="delete-button-container">
+            <button class="delete-button">X</button>
+        </div>
+    `
+}
+
 
 export { rebuildToDoList }

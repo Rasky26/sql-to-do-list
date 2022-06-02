@@ -7,6 +7,7 @@ import { setTimeFromInput } from "../modules/time.modules.js"
 // Boolean that toggles if upcoming, but hidden, items are
 // shown to the DOM or not.
 let showHiddenItems = false
+let showCompletedTasks = true
 
 
 // Await the HTML document and associated elements to load
@@ -23,7 +24,10 @@ function onDocumentLoad() {
     $("#form--to-do-entry").submit("#submit-new-item", handleToDoSubmission)
 
     // Click listener for completing a to-do item
-    $("#to-do-list").on("click", ".complete-button", markToDoCompleted)
+    $(".to-do-list").on("change", ".complete-button", toggleToDoComplete)
+
+    // Click listener for deleting a specific to-do item
+    $(".to-do-list").on("click", ".delete-button", handleDeleteToDo)
 }
 
 
@@ -55,9 +59,6 @@ function handleToDoSubmission(event) {
 // Function that POSTs a new To Do to the DB.
 function postNewToDo(toDoObj) {
 
-    // Get the values from the form's input
-    console.log(">>>>>", toDoObj)
-
     // Send a new To Do item to the server
     $.ajax({
         url: "/to-do",
@@ -81,9 +82,23 @@ function postNewToDo(toDoObj) {
 }
 
 
+// Function that handles which To Do GET routes to call
+function getToDoList() {
+
+    // Get and display the open To Do items to the DOM
+    getOpenToDoList()
+
+    // If the user wants people to show past tasks, call
+    // this function
+    if (showCompletedTasks) {
+        getCompletedToDoList()
+    }
+}
+
+
 // Function that GETs list of all To Do's from the server and
 // displays them to the DOM
-function getToDoList() {
+function getOpenToDoList() {
 
     // Get the latest to-do list from the server
     $.ajax({
@@ -94,12 +109,38 @@ function getToDoList() {
     .then((res) => {
         console.log("Getting result /to-do")
         // Send the DB results to be re-rendered to the DOM
-        rebuildToDoList(res)
+        rebuildToDoList(res, "#to-do-list-open")
     })
     // Or display the error that occurred
     .catch((err) => {
         console.log(`
-            Error on script.js getToDoList()
+            Error on script.js getOpenToDoList()
+
+            ${err}
+        `)
+    })
+}
+
+
+// Function that GETs list of all To Do's from the server and
+// displays them to the DOM
+function getCompletedToDoList() {
+
+    // Get the latest to-do list from the server
+    $.ajax({
+        url: "/to-do/completed-tasks",
+        method: "GET",
+    })
+    // Get the results from the server
+    .then((res) => {
+        console.log("Getting result /to-do/completed-tasks")
+        // Send the DB results to be re-rendered to the DOM
+        rebuildToDoList(res, "#to-do-list-completed")
+    })
+    // Or display the error that occurred
+    .catch((err) => {
+        console.log(`
+            Error on script.js getCompletedToDoList()
 
             ${err}
         `)
@@ -110,13 +151,25 @@ function getToDoList() {
 // Function that updates the server with the current
 // time for the selected object when the the `Complete`
 // button event occurs.
-function markToDoCompleted() {
+function toggleToDoComplete() {
 
-    // Get the targetted object's ID from the `data-*` value
+    // Get the current toggle button and get the containing
+    // `<div>` ID value
     const objId = $(this).parents(".to-do-item").data('id')
+
     // Get the current time
     const taskData = {
         completed_on: new Date()
+    }
+
+    // Get the (now) updated status of the toggle button
+    // for its boolean value
+    let completedStatus = $(this).is(":checked")
+
+    // If the status was turned back to `false`, then
+    // set the `completed_on` status back to `null`.
+    if (!completedStatus) {
+        taskData.completed_on = null
     }
 
     // Get the latest to-do list from the server
@@ -135,6 +188,36 @@ function markToDoCompleted() {
     .catch((err) => {
         console.log(`
             Error on script.js markToDoCompleted()
+
+            ${err}
+        `)
+    })
+}
+
+
+// Function that handles the deletion of a specific To Do
+// element from the DB
+function handleDeleteToDo() {
+
+    // Get the current delete button and get the containing
+    // `<div>` ID value
+    const objId = $(this).parents(".to-do-item").data('id')
+
+    // Delete the specific To Do element
+    $.ajax({
+        url: `/to-do/${objId}`,
+        method: "DELETE",
+    })
+    // Get the results from the server
+    .then(() => {
+        console.log(`DELETE successful to /to-do/${objId}`)
+        // Send the DB results to be re-rendered to the DOM
+        getToDoList()
+    })
+    // Or display the error that occurred
+    .catch((err) => {
+        console.log(`
+            Error on script.js handleDeleteToDo()
 
             ${err}
         `)
