@@ -87,8 +87,6 @@ function updateListAgainstFilters(objects) {
 // Function that handles creating the individual DOM To Do item
 function toDoComponent(obj) {
 
-    console.log(obj)
-
     // Return the HTML with values related to the specific object
     return `
         <div class="to-do-item" data-id=${obj.id}>

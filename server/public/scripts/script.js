@@ -25,6 +25,9 @@ function onDocumentLoad() {
 
     // Click listener for completing a to-do item
     $(".to-do-list").on("change", ".complete-button", toggleToDoComplete)
+
+    // Click listener for deleting a specific to-do item
+    $(".to-do-list").on("click", ".delete-button", handleDeleteToDo)
 }
 
 
@@ -185,6 +188,36 @@ function toggleToDoComplete() {
     .catch((err) => {
         console.log(`
             Error on script.js markToDoCompleted()
+
+            ${err}
+        `)
+    })
+}
+
+
+// Function that handles the deletion of a specific To Do
+// element from the DB
+function handleDeleteToDo() {
+
+    // Get the current delete button and get the containing
+    // `<div>` ID value
+    const objId = $(this).parents(".to-do-item").data('id')
+
+    // Delete the specific To Do element
+    $.ajax({
+        url: `/to-do/${objId}`,
+        method: "DELETE",
+    })
+    // Get the results from the server
+    .then(() => {
+        console.log(`DELETE successful to /to-do/${objId}`)
+        // Send the DB results to be re-rendered to the DOM
+        getToDoList()
+    })
+    // Or display the error that occurred
+    .catch((err) => {
+        console.log(`
+            Error on script.js handleDeleteToDo()
 
             ${err}
         `)

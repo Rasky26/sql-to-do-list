@@ -150,7 +150,7 @@ routes.put("/:id", (req, res) => {
      // Check if bad data (a non-number) was sent
      if (isNaN(Number(toDoId))) {
         // If so, return a response indicating that much
-        res.status(400).send({error: `Invalid song id of ${koalaId}`})
+        res.status(400).send({error: `Invalid id of ${toDoId}`})
     }
 
     // Set a default value to `null`
@@ -189,6 +189,52 @@ routes.put("/:id", (req, res) => {
     .catch((err) => {
         console.log(`
             Server Error on PUT method:
+
+            ${err}
+        `)
+        res.sendStatus(500)
+    })
+})
+
+
+// DELETE method for removing the current task
+routes.delete("/:id", (req, res) => {
+
+    console.log("In the DELETE!")
+
+    // Explicity get the ID from the URL param
+    const toDoId = parseInt(req.params.id)
+
+     // Check if bad data (a non-number) was sent
+     if (isNaN(Number(toDoId))) {
+        // If so, return a response indicating that much
+        res.status(400).send({error: `Invalid id of ${toDoId}`})
+    }
+
+    // Set the SQL query
+    const sqlQuery = `
+        DELETE FROM "todolist"
+        WHERE id = $1
+    `
+
+    // Set the SQL params
+    const sqlParams = [
+        toDoId,
+    ]
+
+    // Submit the query to Postgres
+    pool.query(sqlQuery, sqlParams)
+
+    // Return and send the response rows
+    .then(() => {
+        console.log("Successful To Do DELETE made")
+        res.sendStatus(204)
+    })
+
+    // Otherwise, log the error
+    .catch((err) => {
+        console.log(`
+            Server Error on DELETE method:
 
             ${err}
         `)
