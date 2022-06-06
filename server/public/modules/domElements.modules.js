@@ -110,7 +110,7 @@ function toDoComponent(obj) {
 function setCompletedButtonDisplay(completed_on) {
 
     return `
-        <div class="complete-button-container">
+        <div class="complete-button-container form-check form-switch">
             <input 
                 class="complete-button form-check-input" 
                 type="checkbox"
@@ -198,7 +198,7 @@ function deleteButton() {
 
     return `
         <div class="delete-button-container">
-            <button class="delete-button">X</button>
+            <button class="delete-button btn btn-danger">X</button>
         </div>
     `
 }
