@@ -195,3 +195,7 @@ input[type="time"] {
 .note-container {
     width: 10%;
 }
+
+.completed {
+    background-color: var(--clr-green-focus);
+}

@@ -1,14 +1,5 @@
 // Import needed modules
 import { rebuildToDoList } from "../modules/domElements.modules.js"
-import { setTimeFromInput } from "../modules/time.modules.js"
-
-// Set global variables
-// --------------------------------
-// Boolean that toggles if upcoming, but hidden, items are
-// shown to the DOM or not.
-let showHiddenItems = false
-let showCompletedTasks = true
-
 
 // Await the HTML document and associated elements to load
 $(onDocumentLoad)
@@ -39,20 +30,15 @@ function handleToDoSubmission(event) {
 
     // Assemble an object based on the To Do input fields
     let newToDo = {
-        taskName: $("#to-do-name").val(),
-        dueDate: setTimeFromInput(
-            $("#due-date-date-selector").val(),
-            $("#due-date-time-selector").val()
-        ),
-        hiddenUntil: setTimeFromInput(
-            $("#delay-display-item-until-date").val(),
-            $("#delay-display-item-until-time").val()
-        ),
-        notes: $("#to-do-notes").val(),
+        taskName: $("#to-do-name").val()
     }
 
     // Post the information to the server
     postNewToDo(newToDo)
+    console.log("BEFORE")
+    // Load in the updated list to the DOM
+    getToDoList()
+    console.log("AFTER")
 }
 
 
@@ -68,8 +54,6 @@ function postNewToDo(toDoObj) {
     // Get a successful response
     .then((res) => {
         console.log("Successful POST made.")
-        // Load in the updated list to the DOM
-        getToDoList()
     })
     // Display if a POST error occurred
     .catch((err) => {
@@ -82,23 +66,11 @@ function postNewToDo(toDoObj) {
 }
 
 
-// Function that handles which To Do GET routes to call
-function getToDoList() {
-
-    // Get and display the open To Do items to the DOM
-    getOpenToDoList()
-
-    // If the user wants people to show past tasks, call
-    // this function
-    if (showCompletedTasks) {
-        getCompletedToDoList()
-    }
-}
-
-
 // Function that GETs list of all To Do's from the server and
 // displays them to the DOM
-function getOpenToDoList() {
+function getToDoList() {
+
+    console.log("In the GET method")
 
     // Get the latest to-do list from the server
     $.ajax({
@@ -108,8 +80,9 @@ function getOpenToDoList() {
     // Get the results from the server
     .then((res) => {
         console.log("Getting result /to-do")
+        console.log(res)
         // Send the DB results to be re-rendered to the DOM
-        rebuildToDoList(res, "#to-do-list-open")
+        rebuildToDoList(res, "#to-do-list")
     })
     // Or display the error that occurred
     .catch((err) => {
@@ -122,36 +95,12 @@ function getOpenToDoList() {
 }
 
 
-// Function that GETs list of all To Do's from the server and
-// displays them to the DOM
-function getCompletedToDoList() {
-
-    // Get the latest to-do list from the server
-    $.ajax({
-        url: "/to-do/completed-tasks",
-        method: "GET",
-    })
-    // Get the results from the server
-    .then((res) => {
-        console.log("Getting result /to-do/completed-tasks")
-        // Send the DB results to be re-rendered to the DOM
-        rebuildToDoList(res, "#to-do-list-completed")
-    })
-    // Or display the error that occurred
-    .catch((err) => {
-        console.log(`
-            Error on script.js getCompletedToDoList()
-
-            ${err}
-        `)
-    })
-}
-
-
 // Function that updates the server with the current
 // time for the selected object when the the `Complete`
 // button event occurs.
 function toggleToDoComplete() {
+
+    console.log("toggle")
 
     // Get the current toggle button and get the containing
     // `<div>` ID value
@@ -198,6 +147,8 @@ function toggleToDoComplete() {
 // Function that handles the deletion of a specific To Do
 // element from the DB
 function handleDeleteToDo() {
+
+    console.log("here!")
 
     // Get the current delete button and get the containing
     // `<div>` ID value
